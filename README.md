@@ -9,7 +9,6 @@ payment test
 |epayments|微信支付||
 |支付宝|支付宝支付||
 
-
 ### 支付处理
 https://github.com/gdchenli/payment_demo
 
@@ -19,7 +18,6 @@ https://github.com/gdchenli/payment_demo
 
 ### php环境要求
 `PHP7.1+`
-
 
 ### 界面
 ![image](doc/images/demo.png)
