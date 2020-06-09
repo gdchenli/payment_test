@@ -48,7 +48,7 @@ class Index extends BaseController
         ];
         $orderId = date('YmdHis') . mt_rand(100, 999);
 
-        return view('index', ['orderId' => $orderId, 'orgCode' => $orgCode, 'methodCode' => json_encode($methodCode, JSON_UNESCAPED_UNICODE)]);
+        return view('index_index', ['orderId' => $orderId, 'orgCode' => $orgCode, 'methodCode' => json_encode($methodCode, JSON_UNESCAPED_UNICODE)]);
     }
 
 
@@ -121,7 +121,5 @@ class Index extends BaseController
             default:
                 return '暂时不支持';
         }
-
-
     }
 }

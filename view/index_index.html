@@ -39,9 +39,9 @@
             <div class="col-sm-5">
                 <select class="form-control" id="org_code" name="org_code">
                     <option value="">请选择</option>
-                    <?php foreach($orgCode as $org): ?>
-                    <option value="<?php echo $org ?>"><?php echo $org ?></option>
-                    <?php endforeach ?>
+                    {volist name="orgCode" id="org"}
+                    <option value="{$org}">{$org}</option>
+                    {/volist}
                 </select>
             </div>
         </div>
@@ -67,7 +67,7 @@
         crossorigin="anonymous"></script>
 <script>
     $(function () {
-        var methodCode = JSON.parse('<?php echo $methodCode;?>');
+        var methodCode = JSON.parse('{$methodCode|raw}');
         $('#org_code').change(function () {
             var optionHtml = ''
             var currOrg = $(this).find('option:selected').val();

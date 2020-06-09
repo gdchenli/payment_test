@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "499ed070a201f24fee00a81f9004249b",
+    "content-hash": "bfa59666f0e4618fe1bcd713b32e1990",
     "packages": [
         {
             "name": "curl/curl",
@@ -631,43 +631,6 @@
             ],
             "description": "the php template engine",
             "time": "2019-09-20T15:31:04+00:00"
-        },
-        {
-            "name": "topthink/think-view",
-            "version": "v1.0.14",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/top-think/think-view.git",
-                "reference": "edce0ae2c9551ab65f9e94a222604b0dead3576d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-view/zipball/edce0ae2c9551ab65f9e94a222604b0dead3576d",
-                "reference": "edce0ae2c9551ab65f9e94a222604b0dead3576d",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1.0",
-                "topthink/think-template": "^2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "think\\view\\driver\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "liu21st",
-                    "email": "liu21st@gmail.com"
-                }
-            ],
-            "description": "thinkphp template driver",
-            "time": "2019-11-06T11:40:13+00:00"
         }
     ],
     "packages-dev": [
