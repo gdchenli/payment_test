@@ -27,18 +27,10 @@ class Index extends BaseController
 
     public function index()
     {
-        $orgCode = [self::ALIPAY_ORG, self::EPAYMENTS_ORG, self::ALLPAY_ORG];
+        $orgCode    = [self::ALIPAY_ORG, self::EPAYMENTS_ORG, self::ALLPAY_ORG];
         $methodCode = [
-            ['name' => self::ALIPAY_ORG, 'children' =>
-                [
-                    ['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝']
-                ]
-            ],
-            ['name' => self::EPAYMENTS_ORG, 'children' =>
-                [
-                    ['name' => self::WECHAT_PAYMENT, 'val' => '微信']
-                ]
-            ],
+            ['name' => self::ALIPAY_ORG, 'children' => [['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝']]],
+            ['name' => self::EPAYMENTS_ORG, 'children' => [['name' => self::WECHAT_PAYMENT, 'val' => '微信']]],
             ['name' => self::ALLPAY_ORG, 'children' =>
                 [
                     ['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝'],
@@ -46,15 +38,18 @@ class Index extends BaseController
                 ],
             ],
         ];
-        $orderId = date('YmdHis') . mt_rand(100, 999);
+        $orderId    = date('YmdHis') . mt_rand(100, 999);
 
-        return view('index_index', ['orderId' => $orderId, 'orgCode' => $orgCode, 'methodCode' => json_encode($methodCode, JSON_UNESCAPED_UNICODE)]);
+        return view('index_index', [
+            'orderId'    => $orderId,
+            'orgCode'    => $orgCode,
+            'methodCode' => json_encode($methodCode, JSON_UNESCAPED_UNICODE)]);
     }
 
 
     public function pay()
     {
-        $param = [];
+        $param             = [];
         $param['org_code'] = input('post.org_code');
         if (!$param['org_code']) {
             return '请选择支付机构';
