@@ -27,17 +27,17 @@
         <div class="form-group row">
             <label for="total_fee" class="col-sm-2 col-form-label">金额</label>
             <div class=" col-sm-5 input-group flex-nowrap">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-total-fee">AUD</span>
-                </div>
-                <input type="text" class="form-control" aria-label="total_fee" aria-describedby="basic-total-fee"
+                <input type="text" class="form-control" aria-label="total_fee" aria-describedby="basic-currency"
                        id="total_fee" autocomplete="off" name="total_fee" value="0.01">
+                <div class="input-group-append">
+                    <span class="input-group-text" id="basic-currency">AUD</span>
+                </div>
             </div>
         </div>
         <div class="form-group row">
             <label for="org_code" class="col-sm-2 col-form-label">支付机构</label>
             <div class="col-sm-5">
-                <select class="form-control form-control-sm" id="org_code" name="org_code">
+                <select class="form-control" id="org_code" name="org_code">
                     <option value="">请选择</option>
                     <?php foreach($orgCode as $org): ?>
                     <option value="<?php echo $org ?>"><?php echo $org ?></option>
@@ -48,14 +48,14 @@
         <div class="form-group row">
             <label for="method_code" class="col-sm-2 col-form-label">支付方式</label>
             <div class="col-sm-5">
-                <select class="form-control form-control-sm" id="method_code" name="method_code">
+                <select class="form-control" id="method_code" name="method_code">
                     <option value="">请选择</option>
                 </select>
             </div>
         </div>
         <div class="form-group row">
             <div class="col-sm-2">
-                <button type="submit" class="btn btn-primary">去支付</button>
+                <button type="submit" class="btn btn-primary btn-sm">去支付</button>
             </div>
         </div>
     </form>
@@ -72,11 +72,14 @@
             var optionHtml = ''
             var currOrg = $(this).find('option:selected').val();
             for (var i = 0; i < methodCode.length; i++) {
-                if (methodCode[i].name == currOrg) {
+                if (methodCode[i].name === currOrg) {
                     for (var j = 0; j < methodCode[i].children.length; j++) {
                         optionHtml += "<option value='" + methodCode[i].children[j].name + "'>" + methodCode[i].children[j].val + "</option>";
                     }
                 }
+            }
+            if (optionHtml === '') {
+                optionHtml = '<option value="">请选择</option>'
             }
             $('#method_code').html(optionHtml);
         })

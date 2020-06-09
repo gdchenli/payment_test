@@ -6,28 +6,47 @@ use app\BaseController;
 
 class Index extends BaseController
 {
+    //支付机构
+    const ALIPAY_ORG = 'alipay';
+    const EPAYMENTS_ORG = 'epayments';
+    const ALLPAY_ORG = 'allpay';
+
+    //支付方式
+    const ALIPAY_PAYMENT = 'alipay_payment';
+    const WECHAT_PAYMENT = 'wechat';
+    const VTPAYMENT_PAYMENT = 'vtpayment_payment';
+
+    //订单来源
+    const PC_HTC_X_TYPE = '1';
+    const MOBILE_HTC_X_TYPE = '2';
+    const ANDROID_APP_HTC_X_TYPE = '3';
+    const IOS_APP_HTC_X_TYPE = '4';
+    const WMP_HTC_X_TYPE = '5';
+    const WECHAT_MINI_HTC_X_TYPE = '6';
+    const ALIPAY_MINI_HTC_X_TYPE = '7';
+
     public function index()
     {
-        $orgCode = ['alipay', 'epayments', 'allpay'];
+        $orgCode = [self::ALIPAY_ORG, self::EPAYMENTS_ORG, self::ALLPAY_ORG];
         $methodCode = [
-            ['name' => 'alipay', 'children' =>
+            ['name' => self::ALIPAY_ORG, 'children' =>
                 [
-                    ['name' => 'alipay_payment', 'val' => '支付宝']
+                    ['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝']
                 ]
             ],
-            ['name' => 'epayments', 'children' =>
+            ['name' => self::EPAYMENTS_ORG, 'children' =>
                 [
-                    ['name' => 'wechat', 'val' => '微信']
+                    ['name' => self::WECHAT_PAYMENT, 'val' => '微信']
                 ]
             ],
-            ['name' => 'allpay', 'children' =>
+            ['name' => self::ALLPAY_ORG, 'children' =>
                 [
-                    ['name' => 'alipay_payment', 'val' => '支付宝'],
-                    ['name' => 'vtpayment_payment', 'val' => '银联']
+                    ['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝'],
+                    ['name' => self::VTPAYMENT_PAYMENT, 'val' => '银联']
                 ],
             ],
         ];
-        $orderId = date('YmdHis') + mt_rand(100, 999);
+        $orderId = date('YmdHis') . mt_rand(100, 999);
 
         return view('index', ['orderId' => $orderId, 'orgCode' => $orgCode, 'methodCode' => json_encode($methodCode, JSON_UNESCAPED_UNICODE)]);
     }
@@ -58,19 +77,51 @@ class Index extends BaseController
 
         $param['currency'] = 'AUD';
 
-        $param['user_agent_type'] = '1';
+        $param['user_agent_type'] = self::PC_HTC_X_TYPE;
         if (isMobile()) {
-            $param['user_agent_type'] = '2';
+            $param['user_agent_type'] = self::MOBILE_HTC_X_TYPE;
+        }
+        if (isWeixin()) {
+            $param['user_agent_type'] = self::WMP_HTC_X_TYPE;
         }
 
         $curl = new \Curl\Curl();
         $host = env('payment_demo.host');
-        $curl->post($host . '/payment/order/submit', $param);
-        $result = json_decode($curl->response, true);
-        if ($result['code'] == 0) {
-            return $result['data'];
+        switch ($param['user_agent_type']) {
+            case self::PC_HTC_X_TYPE:
+                if ($param['org_code'] == 'epayments') {
+                    $host .= '/payment/order/qrcode';
+                    $curl->post($host, $param);
+                    $result = json_decode($curl->response, true);
+                    if ($result['code'] == 0) {
+                        return '<p style="padding-left:30px">微信支付二维码</p>' .
+                            '<p><img src = "' . $result['data'] . '" /></p>';
+                    }
+                    return $result['message'];
+                } else {
+                    $host .= '/payment/order/submit';
+                    $curl->post($host, $param);
+                    $result = json_decode($curl->response, true);
+                    if ($result['code'] == 0) {
+                        return $result['data'];
+                    }
+                    return $result['message'];
+                }
+                break;
+            case self::MOBILE_HTC_X_TYPE:
+            case self::WMP_HTC_X_TYPE:
+                $host .= '/payment/order/submit';
+                $curl->post($host, $param);
+                $result = json_decode($curl->response, true);
+                if ($result['code'] == 0) {
+                    return $result['data'];
+                }
+                return $result['message'];
+                break;
+            default:
+                return '暂时不支持';
         }
 
-        return $result['message'];
+
     }
 }
