@@ -3,6 +3,8 @@
 namespace app\controller;
 
 use app\BaseController;
+use Curl\Curl;
+
 
 class Index extends BaseController
 {
@@ -17,13 +19,13 @@ class Index extends BaseController
     const VTPAYMENT_PAYMENT = 'vtpayment_payment';
 
     //订单来源
-    const PC_HTC_X_TYPE = '1';
-    const MOBILE_HTC_X_TYPE = '2';
-    const ANDROID_APP_HTC_X_TYPE = '3';
-    const IOS_APP_HTC_X_TYPE = '4';
-    const WMP_HTC_X_TYPE = '5';
-    const WECHAT_MINI_HTC_X_TYPE = '6';
-    const ALIPAY_MINI_HTC_X_TYPE = '7';
+    const PC_HTC_X_TYPE = '1';          //pc
+    const MOBILE_HTC_X_TYPE = '2';      //移动端
+    const ANDROID_APP_HTC_X_TYPE = '3'; //安卓app
+    const IOS_APP_HTC_X_TYPE = '4';     //ios app
+    const WMP_HTC_X_TYPE = '5';         //微信浏览器
+    const WECHAT_MINI_HTC_X_TYPE = '6'; //微信小程序
+    const ALIPAY_MINI_HTC_X_TYPE = '7'; //支付宝小程序
 
     public function index()
     {
@@ -70,46 +72,41 @@ class Index extends BaseController
             return '支付金额';
         }
 
-        $param['currency'] = 'AUD';
+        $param['currency'] = 'EUR';
 
         $param['user_agent_type'] = self::PC_HTC_X_TYPE;
         if (isMobile()) {
             $param['user_agent_type'] = self::MOBILE_HTC_X_TYPE;
         }
-        if (isWeixin()) {
+        if (isWeiXin()) {
             $param['user_agent_type'] = self::WMP_HTC_X_TYPE;
         }
 
-        $curl = new \Curl\Curl();
+        $curl = new Curl();
         $host = env('payment_demo.host');
         switch ($param['user_agent_type']) {
             case self::PC_HTC_X_TYPE:
+                $host .= '/payment/order/pay';
+                $curl->post($host, $param);
+                $result = json_decode($curl->response, true);
+
                 if ($param['org_code'] == 'epayments') {
-                    $host .= '/payment/order/qrcode';
-                    $curl->post($host, $param);
-                    $result = json_decode($curl->response, true);
                     if ($result['code'] == 0) {
                         return '<p style="padding-left:30px">微信支付二维码</p>' .
                             '<p><img src = "' . $result['data'] . '" /></p>';
                     }
                     return $result['message'];
                 } else {
-                    $host .= '/payment/order/submit';
-                    $curl->post($host, $param);
-                    $result = json_decode($curl->response, true);
-                    if ($result['code'] == 0) {
-                        return $result['data'];
-                    }
-                    return $result['message'];
+                    header("location:".$result['data']);
                 }
                 break;
             case self::MOBILE_HTC_X_TYPE:
             case self::WMP_HTC_X_TYPE:
-                $host .= '/payment/order/submit';
+                $host .= '/payment/order/pay';
                 $curl->post($host, $param);
                 $result = json_decode($curl->response, true);
                 if ($result['code'] == 0) {
-                    return $result['data'];
+                    header("location:".$result['data']);
                 }
                 return $result['message'];
                 break;
