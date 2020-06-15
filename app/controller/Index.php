@@ -42,7 +42,7 @@ class Index extends BaseController
         ];
         $orderId    = date('YmdHis') . mt_rand(100, 999);
 
-        return view('index_index', [
+        return view('index', [
             'orderId'    => $orderId,
             'orgCode'    => $orgCode,
             'methodCode' => json_encode($methodCode, JSON_UNESCAPED_UNICODE)]);
@@ -84,34 +84,17 @@ class Index extends BaseController
 
         $curl = new Curl();
         $host = env('payment_demo.host');
-        switch ($param['user_agent_type']) {
-            case self::PC_HTC_X_TYPE:
-                $host .= '/payment/order/pay';
-                $curl->post($host, $param);
-                $result = json_decode($curl->response, true);
+        $host .= '/payment/pay';
+        $curl->post($host, $param);
+        $result = json_decode($curl->response, true);
 
-                if ($param['org_code'] == 'epayments') {
-                    if ($result['code'] == 0) {
-                        return '<p style="padding-left:30px">微信支付二维码</p>' .
-                            '<p><img src = "' . $result['data'] . '" /></p>';
-                    }
-                    return $result['message'];
-                } else {
-                    header("location:".$result['data']);
-                }
-                break;
-            case self::MOBILE_HTC_X_TYPE:
-            case self::WMP_HTC_X_TYPE:
-                $host .= '/payment/order/pay';
-                $curl->post($host, $param);
-                $result = json_decode($curl->response, true);
-                if ($result['code'] == 0) {
-                    header("location:".$result['data']);
-                }
-                return $result['message'];
-                break;
-            default:
-                return '暂时不支持';
+        if($curl->error_code!=0){
+            return "网络错误";
         }
+        if($result["code"]!=0) {
+            return $result["message"];
+        }
+
+        return redirect($result["data"]);
     }
 }
