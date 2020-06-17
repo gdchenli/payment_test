@@ -6,7 +6,7 @@ namespace app\controller;
 
 use Curl\Curl;
 
-class Page
+class Payment
 {
     public function qrcode()
     {
