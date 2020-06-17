@@ -28,9 +28,10 @@
             <label for="total_fee" class="col-sm-2 col-form-label">金额</label>
             <div class=" col-sm-5 input-group flex-nowrap">
                 <input type="text" class="form-control" aria-label="total_fee" aria-describedby="basic-currency"
-                       id="total_fee" autocomplete="off" name="total_fee" value="0.01">
+                       id="total_fee" autocomplete="off" name="total_fee" value="1">
                 <div class="input-group-append">
-                    <span class="input-group-text" id="basic-currency">AUD</span>
+                    <span class="input-group-text" id="basic-currency">币种</span>
+                    <input type="hidden" name="currency" value="" id="currency_input">
                 </div>
             </div>
         </div>
@@ -43,6 +44,7 @@
                     <option value="{$org}">{$org}</option>
                     {/volist}
                 </select>
+
             </div>
         </div>
         <div class="form-group row">
@@ -58,6 +60,12 @@
                 <button type="submit" class="btn btn-primary btn-sm">去支付</button>
             </div>
         </div>
+        <p>
+            支付机构为alipay时，对接的是支付宝测试环境，可以使用测试买家账号付款<br>
+            支付宝账号：forex_925084@alitest.com<br>
+            登录密码：a111111<br>
+            支付密码：b111111<br>
+        </p>
     </form>
 </div>
 <!-- Optional JavaScript -->
@@ -74,7 +82,7 @@
             for (var i = 0; i < methodCode.length; i++) {
                 if (methodCode[i].name === currOrg) {
                     for (var j = 0; j < methodCode[i].children.length; j++) {
-                        optionHtml += "<option value='" + methodCode[i].children[j].name + "'>" + methodCode[i].children[j].val + "</option>";
+                        optionHtml += "<option value='" + methodCode[i].children[j].name + "' currency='"+ methodCode[i].children[j].currency+"'>" + methodCode[i].children[j].val + "</option>";
                     }
                 }
             }
@@ -82,6 +90,16 @@
                 optionHtml = '<option value="">请选择</option>'
             }
             $('#method_code').html(optionHtml);
+
+            var currency =  $('#method_code').find('option').first().attr('currency');
+            $('#basic-currency').html(currency)
+            $('#currency_input').val(currency)
+        })
+        $('#method_code').change(function () {
+            var currency = $(this).find('option:selected').attr('currency');
+            $('#basic-currency').html(currency)
+            $('#currency_input').val(currency)
+
         })
     })
 </script>

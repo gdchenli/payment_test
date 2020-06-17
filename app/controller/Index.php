@@ -31,12 +31,12 @@ class Index extends BaseController
     {
         $orgCode    = [self::ALIPAY_ORG, self::EPAYMENTS_ORG, self::ALLPAY_ORG];
         $methodCode = [
-            ['name' => self::ALIPAY_ORG, 'children' => [['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝']]],
-            ['name' => self::EPAYMENTS_ORG, 'children' => [['name' => self::WECHAT_PAYMENT, 'val' => '微信']]],
+            ['name' => self::ALIPAY_ORG, 'children' => [['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝','currency'=>'AUD']]],
+            ['name' => self::EPAYMENTS_ORG, 'children' => [['name' => self::WECHAT_PAYMENT, 'val' => '微信','currency'=>'NZD']]],
             ['name' => self::ALLPAY_ORG, 'children' =>
                 [
-                    ['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝'],
-                    ['name' => self::VTPAYMENT_PAYMENT, 'val' => '银联']
+                    ['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝','currency'=>'JPY'],
+                    ['name' => self::VTPAYMENT_PAYMENT, 'val' => '银联','currency'=>'JPY']
                 ],
             ],
         ];
@@ -72,7 +72,7 @@ class Index extends BaseController
             return '支付金额';
         }
 
-        $param['currency'] = 'EUR';
+        $param['currency'] = input('post.currency');;
 
         $param['user_agent_type'] = self::PC_HTC_X_TYPE;
         if (isMobile()) {
