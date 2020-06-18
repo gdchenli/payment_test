@@ -50,6 +50,6 @@ class Payment
             return $result["message"];
         }
 
-       echo $result["data"];
+       return $result["data"];
     }
 }
