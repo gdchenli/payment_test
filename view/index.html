@@ -77,7 +77,7 @@
             for (var i = 0; i < methodCode.length; i++) {
                 if (methodCode[i].name === currOrg) {
                     for (var j = 0; j < methodCode[i].children.length; j++) {
-                        optionHtml += "<option value='" + methodCode[i].children[j].name + "' currency='"+ methodCode[i].children[j].currency+"'>" + methodCode[i].children[j].val + "</option>";
+                        optionHtml += "<option value='" + methodCode[i].children[j].name + "' currency='" + methodCode[i].children[j].currency + "'>" + methodCode[i].children[j].val + "</option>";
                     }
                 }
             }
@@ -86,7 +86,7 @@
             }
             $('#method_code').html(optionHtml);
 
-            var currency =  $('#method_code').find('option').first().attr('currency');
+            var currency = $('#method_code').find('option').first().attr('currency');
             $('#basic-currency').html(currency)
             $('#currency_input').val(currency)
         })
