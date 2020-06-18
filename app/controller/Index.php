@@ -12,11 +12,13 @@ class Index extends BaseController
     const ALIPAY_ORG = 'alipay';
     const EPAYMENTS_ORG = 'epayments';
     const ALLPAY_ORG = 'allpay';
+    const JD_ORG = 'jd';
 
     //支付方式
     const ALIPAY_PAYMENT = 'alipay_payment';
     const WECHAT_PAYMENT = 'wechat';
     const VTPAYMENT_PAYMENT = 'vtpayment_payment';
+    const JD_PAYMENT = 'jd_payment';
 
     //订单来源
     const PC_HTC_X_TYPE = '1';          //pc
@@ -29,16 +31,17 @@ class Index extends BaseController
 
     public function index()
     {
-        $orgCode    = [self::ALIPAY_ORG, self::EPAYMENTS_ORG, self::ALLPAY_ORG];
+        $orgCode    = [self::ALIPAY_ORG, self::EPAYMENTS_ORG, self::ALLPAY_ORG, self::JD_ORG];
         $methodCode = [
-            ['name' => self::ALIPAY_ORG, 'children' => [['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝','currency'=>'AUD']]],
-            ['name' => self::EPAYMENTS_ORG, 'children' => [['name' => self::WECHAT_PAYMENT, 'val' => '微信','currency'=>'NZD']]],
+            ['name' => self::ALIPAY_ORG, 'children' => [['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝', 'currency' => 'AUD']]],
+            ['name' => self::EPAYMENTS_ORG, 'children' => [['name' => self::WECHAT_PAYMENT, 'val' => '微信', 'currency' => 'NZD']]],
             ['name' => self::ALLPAY_ORG, 'children' =>
                 [
-                    ['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝','currency'=>'JPY'],
-                    ['name' => self::VTPAYMENT_PAYMENT, 'val' => '银联','currency'=>'JPY']
+                    ['name' => self::ALIPAY_PAYMENT, 'val' => '支付宝', 'currency' => 'JPY'],
+                    ['name' => self::VTPAYMENT_PAYMENT, 'val' => '银联', 'currency' => 'CNY']
                 ],
             ],
+            ['name' => self::JD_ORG, 'children' => [['name' => self::JD_PAYMENT, 'val' => '京东支付', 'currency' => 'CNY']]],
         ];
         $orderId    = date('YmdHis') . mt_rand(100, 999);
 
@@ -55,6 +58,9 @@ class Index extends BaseController
         $param['org_code'] = input('post.org_code');
         if (!$param['org_code']) {
             return '请选择支付机构';
+        }
+        if ($param['org_code'] == self::JD_ORG) {
+            $param['user_id'] = 1;
         }
 
         $param['method_code'] = input('post.method_code');
@@ -88,10 +94,10 @@ class Index extends BaseController
         $curl->post($host, $param);
         $result = json_decode($curl->response, true);
 
-        if($curl->error_code!=0){
+        if ($curl->error_code != 0) {
             return "网络错误";
         }
-        if($result["code"]!=0) {
+        if ($result["code"] != 0) {
             return $result["message"];
         }
 

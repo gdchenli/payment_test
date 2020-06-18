@@ -31,4 +31,25 @@ class Payment
             'qrcode'    => $result["data"],
            ]);
     }
+
+    public function form()
+    {
+        $params   = input('get.');
+        $paramStr = http_build_query($params);
+
+        $curl = new Curl();
+        $host = env('payment_demo.host');
+        $host .= '/payment/form?'.$paramStr;
+        $curl->get($host);
+        $result = json_decode($curl->response, true);
+
+        if($curl->error_code!=0){
+            return "网络错误";
+        }
+        if($result["code"]!=0) {
+            return $result["message"];
+        }
+
+       echo $result["data"];
+    }
 }
